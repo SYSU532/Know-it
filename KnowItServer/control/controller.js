@@ -247,7 +247,7 @@ exports.GetTalks = async function(username, password){
     }else {
         res = {
             'code' : 0,
-            'errMessage' : 'Invalid User or Password!';
+            'errMessage' : 'Invalid User or Password!'
         }
     }
     return res;

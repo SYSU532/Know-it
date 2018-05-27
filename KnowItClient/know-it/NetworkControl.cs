@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,8 +15,8 @@ namespace know_it
 {
     class NetworkControl
     {
-        public static string AccessingURI = "chat.chenmt.science";
-        private const string httpsPrefix = "https://";
+        public static string AccessingURI = "127.0.0.1";
+        private const string httpsPrefix = "http://";
         private static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)

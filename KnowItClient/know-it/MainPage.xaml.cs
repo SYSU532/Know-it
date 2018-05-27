@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace know_it
         {
             this.InitializeComponent();
             
-            InitializeFrostedGlass(GlassHost);
+            //InitializeFrostedGlass(GlassHost);
         }
         
         private string serverName {
