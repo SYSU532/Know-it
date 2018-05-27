@@ -9,6 +9,7 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Composition;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -53,35 +54,6 @@ namespace know_it
             glassVisual.StartAnimation("Size", bindSizeAnimation);
         }
 
-        private async void FileUpload_Click(object sender, RoutedEventArgs e)
-        {
-            var fop = new FileOpenPicker();
-            fop.FileTypeFilter.Add(".jpg");
-            fop.FileTypeFilter.Add(".jpeg");
-            fop.FileTypeFilter.Add(".png");
-            fop.FileTypeFilter.Add(".mp4");
-            fop.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            var file = await fop.PickSingleFileAsync();
-            if (file != null)
-            {
-
-                Stream fileStream = await file.OpenStreamForReadAsync();
-                
-
-                StorageFolder appLocalFolder = ApplicationData.Current.LocalFolder;
-                StorageFile newFile = await appLocalFolder.CreateFileAsync("fucking jian-yang.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-
-
-                var buffer = new byte[(int)fileStream.Length];
-                fileStream.Read(buffer, 0, (int)fileStream.Length);
-
-                await FileIO.WriteBytesAsync(newFile, buffer);
-            }
-
-
-
-        }
-
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
             var rootFrame = Window.Current.Content as Frame;
@@ -92,9 +64,33 @@ namespace know_it
             }
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var res = await NetworkControl.AttemptSignin(UserNameBox.Text, PasswordBox.Password);
+            string msg = "";
+            bool success = false;
+            if (res["code"] == "-1")
+            {
+                msg = "Connection to server appears to be down, please check.";
+            }
+            else if (res["code"] == "-2")
+            {
+                msg = "Ughh... The server doesn't seem to be a Know-it Server, please check again.";
+            }
+            else if (res["code"] == "0")
+            {
+                msg = res["errorMsg"];
+            }
+            else if (res["code"] == "1")
+            {
+                msg = "Success!";
+            }
+            MessageDialog dialog = new MessageDialog(msg);
+            await dialog.ShowAsync();
+            if (success)
+            {
+                //go to content page, passing a pair with username as key and password as value as parameter.
+            }
         }
     }
 }
