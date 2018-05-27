@@ -2,32 +2,39 @@
 const Koa = require('koa');
 const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
+const rawBody = require('raw-body');
+const fs = require('fs');
 
-const control = require('control/controller');
+const control = require('./control/controller.js');
 
 const app = new Koa();
-app.use(bodyParser());
+
+app.use(bodyParser({
+    formLimit: '100mb',
+    multipart: true
+}));
 
 //URLs Handle
 router.post('/login', async (ctx, next)=>{
     var username = ctx.request.body.name,
             password = ctx.request.body.pass;
-    var loginRes = control.Login(username, password); // [StateCode, errMessgae]
+    var loginRes = await control.Login(username, password); // {StateCode, errMessgae}
     var jsonBack = {
-        'code' : loginRes[0], // 0 for failure, 1 for success
-        'errMessage' : loginRes[1] // when fail, print error message
+        'code' : loginRes['code'], // 0 for failure, 1 for success
+        'errMessage' : loginRes['errMessage'] // when fail, print error message
     };
     ctx.response.body = JSON.stringify(jsonBack);
 });
 
 router.post('/logup', async (ctx, next)=>{
-    var body = ctx.request.body;
+    var body = ctx.request.query;
+    var req = ctx.req;
     var username = body.name, password = body.pass, imgType = body.imageType, rePass = body.rePass,
-        userImage = body.image, phone = body.phone, email = body.email;
-    var logupRes = control.Logup(username, password, rePass, userImage, imgType, phone, email); // [StateCode, errMessgae]
+        userImage = await rawBody(req), phone = body.phone, email = body.email;
+    var logupRes = await control.Logup(username, password, rePass, userImage, imgType, phone, email);
     var jsonBack = {
-        'code' : logupRes[0], // 0 for failure, 1 for success
-        'errMessgae' : logupRes[1] // when fail, print error message
+        'code' : logupRes['code'], // 0 for failure, 1 for success
+        'errMessgae' : logupRes['errMessage'] // when fail, print error message
     };
     ctx.response.body = JSON.stringify(jsonBack);
 });
@@ -35,30 +42,106 @@ router.post('/logup', async (ctx, next)=>{
 router.post('/data', async (ctx, next)=>{
     var body = ctx.request.body;
     var username = body.name, password = body.pass,
-        IDtype = body.type, postID = body.id;
-    var dataRes = control.Data(username, password, IDtype, postID); // [data, IDtype, postID]
+        postID = body.id;
+    var dataRes = await control.Data(username, password, postID); // {StateCode, contentData, imageUrl, mediaUrl, thumbStore, messStore}
     var jsonBack = {
-        'dataContent' : dataRes[0], // The content of reponse data
-        'Type' : dataRes[1], // Request data's type
-        'ID' : dataRes[2] // Request post's id
+        'code' : dataRes['code'],
+        'content' : dataRes['contentData'], // There must have text content
+        'image' : dataRes['imageUrl'], // Image may be null
+        'media' : dataRes['mediaUrl'], // Media may be null
+        'thumbs' : dataRes['thumbsNum'], 
+        'comments' : dataRes['comments']
     };
-    ctx.response.body = JSON.stringify(jsonBack);
+    var errBack = {
+        'errMessage' : 'Invalid user or password!'
+    };
+    if(dataRes['code']){
+        ctx.response.body = JSON.stringify(jsonBack);
+    }else {
+        ctx.response.body = JSON.stringify(errBack);
+    }
 });
 
 router.post('/upload', async (ctx, next)=>{
-    var body = ctx.request.body, stream;
+    var body = ctx.request.query;
     var username = body.name, password = body.pass,
-    IDtype = body.type, content = body.content;
-    if(IDtype !== 'pid'){
-        stream = body.dataStream;
+        title = body.title, content = body.content,imageType = body.imageType, 
+        mediaType = body.mediaType;
+    var imageStream = null, mediaStream = null;
+    if(imageType !== ''){
+        imageStream = await rawBody(ctx.req);
+    }else if(mediaType !== ''){
+        mediaStream = await rawBody(ctx.req);
     }
-    var dataRes = control.Upload(username, password, IDtype, content, stream); // [StateCode, errMessage]
+    var dataRes = await control.Upload(username, password, title, content, 
+                                    imageStream, imageType, mediaStream, mediaType); // [StateCode, errMessage]
     var jsonBack = {
-        'code' : dataRes[0],
-        'errMessgae' : dataRes[1]
+        'id' : dataRes['id'],
+        'code' : dataRes['code'],
+        'errMessgae' : dataRes['errMessage']
     };
     ctx.response.body = JSON.stringify(jsonBack);
 });
 
-app.listen(8080);
-console.log('Server listening in port 8080.......');
+router.post('/allPostID', async(ctx, next)=>{
+    var dataRes = await control.GetPostIDs();
+    var jsonBack = {
+        'postIDs' : dataRes
+    };
+    ctx.response.body = JSON.stringify(jsonBack);
+});
+
+router.post('/thumbUp', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var thumbUser = body.name, pass = body.pass, postID = body.postID;
+    var dataRes = await control.GiveThumbUp(thumbUser, pass, postID);
+    ctx.response.body = JSON.stringify(dataRes);
+});
+
+router.post('/thumbDown', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var thumbUser = body.name, pass = body.pass, postID = body.postID;
+    var dataRes = await control.DeleteThumbUp(thumbUser, pass, postID);
+    ctx.response.body = JSON.stringify(dataRes);
+});
+
+router.post('/commentUp', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var thumbUser = body.name, pass = body.pass,
+         postID = body.postID, content = body.content;
+    var dataRes = await control.LeaveComment(thumbUser, pass, postID, content);
+    ctx.response.body = JSON.stringify(dataRes);
+});
+
+router.post('/modifyUserInfo', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var username = body.name, password = body.pass,
+        newEmail = body.newEmail, newPhone = body.newPhone,
+        newUserImage = body.newUserImage;
+    var dataRes = await control.ModifyInfo(username, password, newUserImage, newPhone, newEmail);
+    ctx.reponse.body = JSON.stringify(dataRes);
+});
+
+router.post('/getUserInfo', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var jsonBack = {};
+    var username = body.name;
+    var dataRes = await control.GetInfo(username);
+    if(dataRes['code']){
+        jsonBack = {
+            'code' : 1,
+            'username' : username,
+            'phone' : dataRes['phone'],
+            'email' : dataRes['email'],
+            'imageUrl' : dataRes['imageUrl']
+        };
+    }else {
+        jsonBack = dataRes;
+    }
+    ctx.response.body = JSON.stringify(jsonBack);
+});
+
+app.use(router.routes());
+
+app.listen(18080);
+console.log('Server listening in port 18080.......');
