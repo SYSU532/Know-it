@@ -114,10 +114,10 @@ router.post('/commentUp', async(ctx, next)=>{
 });
 
 router.post('/modifyUserInfo', async(ctx, next)=>{
-    var body = ctx.request.body;
+    var body = ctx.request.query;
     var username = body.name, password = body.pass,
         newEmail = body.newEmail, newPhone = body.newPhone,
-        newUserImage = body.newUserImage;
+        newUserImage = await rawBody(ctx.req);
     var dataRes = await control.ModifyInfo(username, password, newUserImage, newPhone, newEmail);
     ctx.reponse.body = JSON.stringify(dataRes);
 });

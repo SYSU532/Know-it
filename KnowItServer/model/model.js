@@ -211,8 +211,8 @@ exports.GetPostsIDs = async function(){
 }
 
 var changeUserImg = function(newUserImage, userImageUrl){
-    var buff = new Buffer(newUserImage);
-    var trueImageUrl = '../img/' + UserImageUrl;
+    var buff = new Buffer(newUserImage, 'ascii');
+    var trueImageUrl = 'img/' + userImageUrl;
     fs.writeFileSync(trueImageUrl, buff, function(err){
         if(err) throw err;
     });
