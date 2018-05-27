@@ -79,6 +79,7 @@ exports.Data = async function(username, pass, id){
     var userTest = await model.TestLogIn(username, pass);
     var res = {
         'code' : 0, // Boolean
+        'editor' : null,
         'contentData' : null, // String
         'imageUrl' : null, // String
         'mediaUrl' : null, // String
@@ -91,8 +92,9 @@ exports.Data = async function(username, pass, id){
         res.contentData = data[0]; 
         res.imageData = data[1];
         res.mediaData = data[2];
-        res.thumbsNum = data[3];
-        res.comments = data[4];
+        res.editor = data[3];
+        res.thumbsNum = data[4];
+        res.comments = data[5];
     }
     return res;
 }
@@ -113,8 +115,18 @@ exports.Upload = async function(username, pass, title, content, imageStream, ima
     };
     if(test === 1){
         res['code'] = 1;
-        var imageUrl = username + imageType, 
-        mediaUrl = username + mediaType;
+        var imageUrl, mediaUrl;
+        if(imageType === ''){
+            imageUrl = '';
+        }else {
+            imageUrl = username + title + imageType;
+        }
+        if(mediaType === ''){
+            mediaUrl = '';
+        }else {
+            mediaUrl = username + title + mediaType;
+        }
+
         if(imageStream !== null){
             model.StorePostImg(imageUrl, imageStream);
         }
@@ -209,4 +221,49 @@ exports.GetInfo = async function(username){
         }
     }
     return jsonBack;
+}
+
+exports.GetAllPosts = async function(username, password){
+    var test = await model.TestLogIn(username, password);
+    var res = {
+        'code' : 0,
+        'errMessage' : ''
+    }
+    if(test === 1){
+        res = await model.AllPosts();
+        res['code'] = 1;
+    }else {
+        res['errMessage'] = 'Invalid User or Password!';
+    }
+    return res;
+}
+
+exports.GetTalks = async function(username, password){
+    var test = await model.TestLogIn(username, password);
+    var res = {};
+    if(test === 1){
+        res = await model.GetAllTalks();
+        res['code'] = 1;
+    }else {
+        res = {
+            'code' : 0,
+            'errMessage' : 'Invalid User or Password!';
+        }
+    }
+    return res;
+}
+
+exports.SendTalk = async function(username, password, content){
+    var test = await model.TestLogIn(username, password);
+    var res = {
+        'code' : 0,
+        'errMessage' : ''
+    }
+    if(test === 1){
+        res['code'] = 1;
+        model.SendTalk(username, content);
+    }else {
+        res['errMessage'] = 'Invalid User or Password!';
+    }
+    return res;
 }

@@ -256,13 +256,46 @@
 
      newPhone：用户新电话
 
-     newUserImage：用户新头像（二进制数据，若头像没有重新上传，则可以将其设为‘’）
+     newUserImage：用户新头像（二进制数据，若头像没有重新上传，则可以将上传二进制数据设为1字节）
 
      ​
 
 10. 获取用户Info的功能
 
-    * 接口地址：服务器地址/getUserInfo
+   * 接口地址：服务器地址/getUserInfo
+
+   * 返回格式：JSON
+
+     * 成功返回
+
+     ```js
+     {
+         'code' : 1,
+         'username' : string
+         'phone' : string,
+         'email' : string,
+         'imageUrl' : string
+     }
+     ```
+
+     * 失败返回
+
+     ```js
+     {
+         'code' : 0,
+         'errMessage' : 'User not exist!'
+     }
+     ```
+
+   * 请求参数：
+
+     name：用户名称
+
+     ​
+
+11. 获取聊天室所有消息功能
+
+    * 接口地址：服务器地址/getAllTalks
 
     * 返回格式：JSON
 
@@ -270,11 +303,10 @@
 
       ```js
       {
-          'code' : 1,
-          'username' : string
-          'phone' : string,
-          'email' : string,
-          'imageUrl' : string
+          'code' : 1, //login check
+          'user1' : content1,
+          'user2' : content2,
+          ....
       }
       ```
 
@@ -283,10 +315,77 @@
       ```js
       {
           'code' : 0,
-          'errMessage' : 'User not exist!'
+          'errMessage' : string
+      }
+      ```
+
+    * 请求参数
+
+      name：用户名称
+
+      pass：用户密码
+
+      ​
+
+12. 聊天室发送消息功能
+
+    * 接口地址：服务器地址/sendTalk
+
+    * 返回格式：JSON
+
+      ```js
+      {
+          'code' : boolean, //login check
+          'errMessage' : string
       }
       ```
 
     * 请求参数：
 
       name：用户名称
+
+      pass：用户密码
+
+      content：发送消息
+
+      ​
+
+13. 获取当前所有帖子精简信息功能
+
+    * 接口地址：服务器地址/allDatas
+
+    * 返回格式：JSON
+
+      * 成功返回
+
+      ```js
+      {
+          'code' : 1,
+          '1' : { // post ID as the first level index
+              'editor' : string,
+              'title' : string,
+              'content' : string,
+              'imageUrl' : string,  // If post has no image, then it will be ''
+              'thumbs' : int
+          },
+          '2' : {
+              ...
+          }
+          ...
+      }
+      ```
+
+      * 失败返回
+
+      ```js
+      {
+          'code' : 0,
+          'errMessage' : string
+      }
+      ```
+
+    * 请求参数
+
+      name：用户名称
+
+      pass：用户密码

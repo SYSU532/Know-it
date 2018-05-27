@@ -34,6 +34,10 @@ var deleteThumb = 'DELETE FROM Thumbs WHERE id = ? AND thumbUser = ?';
 var selectComment = 'SELECT * FROM Comments WHERE id = ?';
 var insertComment = 'INSERT INTO Comments(id, comUser, message) VALUES(?,?,?)';
 
+// 5. Talks
+var insertTalk = 'INSERT INTO Talks(user, content) VALUES(?,?)';
+var allTalk = 'SELECT * FROM Talks';
+
 exports.InsertUser = function(username, pass, userImageUrl, phone, email){
     /* 
     *  -3 for username already exists, -2 for rePass not equal to pass, 
@@ -94,7 +98,8 @@ exports.ModifyUserInfo = function(username, newUserImage, newPhone, newEmail){
     if(newUserImage !== '')(
         connection.query(selectUser, selectParam, function(err, result){
             if(err) throw err;
-            changeUserImg(newUserImage, result[0].userImageUrl);
+            if(newUserImage !== null)
+                changeUserImg(newUserImage, result[0].userImageUrl);
         })
     )
 }
@@ -152,6 +157,7 @@ exports.ViewSinglePost = async function(postID){
             res.push(data.content);
             res.push(imageUrl);
             res.push(mediaUrl);
+            res.push(data.editor);
             connection.query(selectThumb, [realID], function(err, result){
                 if(err){
                     reject(err);
@@ -205,6 +211,50 @@ exports.GetPostsIDs = async function(){
             for(var id in result){
                 res.push(id);
             }
+            resolve(res);
+        });
+    })
+}
+
+exports.GetAllTalks = async function(){
+    return new Promise((resolve, reject)=>{
+        var res = {};
+        connection.query(allTalk, function(err, result){
+            if(err){
+                reject(err);
+            }
+            result.forEach(function(item){
+                res[item.user] = res[item.content];
+            });
+            resolve(res);
+        });
+    });
+}
+
+exports.SendTalk = function(user, content){
+    connection.query(insertTalk, [user, content], function(err, result){
+        if(err) throw err;
+    });
+}
+
+exports.AllPosts = async function(){
+    return new Promise((resolve, reject)=>{
+        var res = {};
+        connection.query(allPost, function(err, result){
+            if(err){
+                reject(err);
+            }
+            result.foreach(function(item){
+                res[item.id] = {
+                    'editor' : item.editor,
+                    'title' : item.title,
+                    'content' : item.content,
+                    'imageUrl' : item.imageUrl
+                };
+                connection.query(selectThumb, [item.id], function(err, result){
+                    res[item.id].thumbs = result.length;
+                });
+            });
             resolve(res);
         });
     })

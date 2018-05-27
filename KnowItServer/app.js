@@ -46,6 +46,7 @@ router.post('/data', async (ctx, next)=>{
     var dataRes = await control.Data(username, password, postID); // {StateCode, contentData, imageUrl, mediaUrl, thumbStore, messStore}
     var jsonBack = {
         'code' : dataRes['code'],
+        'editor' : dataRes['editor'],
         'content' : dataRes['contentData'], // There must have text content
         'image' : dataRes['imageUrl'], // Image may be null
         'media' : dataRes['mediaUrl'], // Media may be null
@@ -60,6 +61,13 @@ router.post('/data', async (ctx, next)=>{
     }else {
         ctx.response.body = JSON.stringify(errBack);
     }
+});
+
+router.post('/allDatas', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var username = body.name, password = body.pass;
+    var dataRes = await control.GetAllPosts(username, password);
+    ctx.response.body = dataRes;
 });
 
 router.post('/upload', async (ctx, next)=>{
@@ -118,6 +126,9 @@ router.post('/modifyUserInfo', async(ctx, next)=>{
     var username = body.name, password = body.pass,
         newEmail = body.newEmail, newPhone = body.newPhone,
         newUserImage = await rawBody(ctx.req);
+    if(newUserImage.length < 10){
+        newUserImage = null;
+    }
     var dataRes = await control.ModifyInfo(username, password, newUserImage, newPhone, newEmail);
     ctx.reponse.body = JSON.stringify(dataRes);
 });
@@ -140,6 +151,21 @@ router.post('/getUserInfo', async(ctx, next)=>{
     }
     ctx.response.body = JSON.stringify(jsonBack);
 });
+
+router.post('/getAllTalks', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var username = body.name, password = body.pass;
+    var dataRes = await control.GetTalks(username, password);
+    ctx.response.body = JSON.stringify(dataRes);
+});
+
+router.post('/sendTalk', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var username = body.name, password = body.pass,
+        content = body.content;
+    var dataRes = await control.SendTalk(username, password, content);
+    ctx.response.body = JSON.stringify(dataRes);
+})
 
 app.use(router.routes());
 
