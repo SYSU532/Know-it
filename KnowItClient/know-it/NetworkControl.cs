@@ -428,7 +428,7 @@ namespace know_it
 
             StringBuilder builder = new StringBuilder();
             builder.Append(accessName);
-            builder.Append("/logup?name=");
+            builder.Append("/upload?name=");
             builder.Append(username);
             builder.Append("&pass=");
             builder.Append(password);
@@ -484,7 +484,7 @@ namespace know_it
 
             StringBuilder builder = new StringBuilder();
             builder.Append(accessName);
-            builder.Append("/logup?name=");
+            builder.Append("/modifyUserInfo?name=");
             builder.Append(username);
             builder.Append("&pass=");
             builder.Append(password);
