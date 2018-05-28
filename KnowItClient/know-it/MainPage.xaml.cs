@@ -29,6 +29,7 @@ namespace know_it
     /// </summary>
     public sealed partial class MainPage : Page
     {
+       
         public MainPage()
         {
             this.InitializeComponent();
@@ -90,8 +91,13 @@ namespace know_it
             await dialog.ShowAsync();
             if (success)
             {
-                var resu = await NetworkControl.QueryUserInfo(UserNameBox.Text);
-                StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(NetworkControl.accessName + "/img/" +  resu["imageUrl"]));
+                var fop = new FileOpenPicker();
+                fop.FileTypeFilter.Add(".jpg");
+                fop.FileTypeFilter.Add(".jpeg");
+                fop.FileTypeFilter.Add(".png");
+                fop.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                var file = await fop.PickSingleFileAsync();
+                await NetworkControl.PublishPost(UserNameBox.Text, PasswordBox.Password, "SecondTry", "Fucking Jian Yang!", file);
                 //go to content page, passing a pair with username as key and password as value as parameter.
             }
         }

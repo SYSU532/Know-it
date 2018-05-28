@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace know_it
     {
         public static string AccessingURI = "chat.chenmt.science";
         private const string httpsPrefix = "https://";
-        private static string accessName { get { return httpsPrefix + AccessingURI; } }
+        public static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)
         {
@@ -518,35 +518,5 @@ namespace know_it
                 };
             }
         }
-
-        public static async void upload()
-        {
-            var fop = new FileOpenPicker();
-            fop.FileTypeFilter.Add(".jpg");
-            fop.FileTypeFilter.Add(".jpeg");
-            fop.FileTypeFilter.Add(".png");
-            fop.FileTypeFilter.Add(".mp4");
-            fop.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            var file = await fop.PickSingleFileAsync();
-            if (file != null)
-            {
-
-                Stream fileStream = await file.OpenStreamForReadAsync();
-                HttpClient client = new HttpClient();
-
-                var buffer = new byte[(int)fileStream.Length];
-                fileStream.Read(buffer, 0, (int)fileStream.Length);
-
-
-                ByteArrayContent content = new ByteArrayContent(buffer);
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-
-                var response = await client.PostAsync("http://127.0.0.1:3001/upload?aaa=123&bb=11", content);
-                var alert = new MessageDialog(response.ToString());
-                await alert.ShowAsync();
-            }
-        }
-
     }
 }
