@@ -91,6 +91,7 @@ namespace know_it
             await dialog.ShowAsync();
             if (success)
             {
+
                 var fop = new FileOpenPicker();
                 fop.FileTypeFilter.Add(".jpg");
                 fop.FileTypeFilter.Add(".jpeg");
@@ -98,6 +99,12 @@ namespace know_it
                 fop.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
                 var file = await fop.PickSingleFileAsync();
                 await NetworkControl.PublishPost(UserNameBox.Text, PasswordBox.Password, "SecondTry", "Fucking Jian Yang!", file);
+                var result = await NetworkControl.GetPostFromID(UserNameBox.Text, PasswordBox.Password, "1");
+                if(result["image"] != null)
+                {
+                    string fullPath = NetworkControl.accessName + "/img/" + result["image"];
+                    Logo.Source = new BitmapImage(new Uri(fullPath, UriKind.Absolute));
+                }
                 //go to content page, passing a pair with username as key and password as value as parameter.
             }
         }

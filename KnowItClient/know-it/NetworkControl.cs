@@ -16,7 +16,7 @@ namespace know_it
     class NetworkControl
     {
         public static string AccessingURI = "chat.chenmt.science";
-        private const string httpsPrefix = "https://";
+        private const string httpsPrefix = "http://";
         public static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)

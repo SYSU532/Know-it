@@ -47,6 +47,7 @@ router.post('/data', async (ctx, next)=>{
     var jsonBack = {
         'code' : dataRes['code'],
         'editor' : dataRes['editor'],
+        'title' : dataRes['title'],
         'content' : dataRes['contentData'], // There must have text content
         'image' : dataRes['imageUrl'], // Image may be null
         'media' : dataRes['mediaUrl'], // Media may be null

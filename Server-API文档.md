@@ -2,25 +2,28 @@
 
 ### 1. Server数据库上的四张表：Users, Posts, Thumbs, Comments
 
-* Users(username, password, userImageUrl, phone, email)
+* users(username, password, userImageUrl, phone, email)
 
   userImageUrl为用户头像的存储路径，通常为：img/用户名+照片类型。
 
-* Posts(id, title, editor, content, imageUrl, mediaUrl)
+* posts(id, title, editor, content, imageUrl, mediaUrl)
 
   主键id会随着记录的插入自增长, content为文本内容，imageUrl和mediaUrl为帖子的照片存储路径，
 
   视频文件存储路径（可为空）。
 
-* Thumbs(id, thumbUser)
+* thumbs(id, thumbUser)
 
   id为对应的点赞的帖子ID，thumbUser为点赞用户名。
 
-* Comments(id, comUser, message)
+* comments(id, comUser, message)
 
   id为对应的评论帖子ID，comUser为评论用户名，message为评论内容。
 
-  ​
+* talks(user, content)
+
+
+  user为用户名称， content为发言内容。
 
 ### 2.Server APIs（均需要采用Post请求方式）
 
@@ -87,6 +90,8 @@
      ```js
      {
          'code' : 1, //0 for failure, 1 for success (login check)
+         'editor' : string    
+         'title' : string,   
          'content' : string,
          'image' : string, //Image name, like "jingyang.jpg" or "jingyang.png"
          'media' : string, //Media name

@@ -80,6 +80,7 @@ exports.Data = async function(username, pass, id){
     var res = {
         'code' : 0, // Boolean
         'editor' : null,
+        'title' : null,
         'contentData' : null, // String
         'imageUrl' : null, // String
         'mediaUrl' : null, // String
@@ -90,11 +91,12 @@ exports.Data = async function(username, pass, id){
         res['code'] = 1;
         var data = await model.ViewSinglePost(id);
         res.contentData = data[0]; 
-        res.imageData = data[1];
-        res.mediaData = data[2];
+        res.imageUrl = data[1];
+        res.mediaUrl = data[2];
         res.editor = data[3];
-        res.thumbsNum = data[4];
-        res.comments = data[5];
+        res.title = data[4];
+        res.thumbsNum = data[5];
+        res.comments = data[6];
     }
     return res;
 }
@@ -116,15 +118,17 @@ exports.Upload = async function(username, pass, title, content, imageStream, ima
     if(test === 1){
         res['code'] = 1;
         var imageUrl, mediaUrl;
+        var arr = await model.GetPostsIDs();
+        var now_id = arr.length + 1;
         if(imageType === ''){
             imageUrl = '';
         }else {
-            imageUrl = username + title + imageType;
+            imageUrl =  now_id + '-' + username + '-' + title + imageType;
         }
         if(mediaType === ''){
             mediaUrl = '';
         }else {
-            mediaUrl = username + title + mediaType;
+            mediaUrl = now_id + '-' + username + '-' + title + mediaType;
         }
 
         if(imageStream !== null){
