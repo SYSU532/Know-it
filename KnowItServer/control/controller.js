@@ -206,7 +206,7 @@ exports.ModifyInfo = async function(username, pass, newUserImage, imgType, newPh
 exports.GetInfo = async function(username){
     var jsonBack = {};
     var data = await model.GetUserInfo(username);
-    if(data.length > 0){
+    if(Object.keys(data).length > 0){
         jsonBack = {
             'code' : 1,
             'phone' : data['phone'],
