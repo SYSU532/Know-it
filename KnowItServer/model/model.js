@@ -14,7 +14,7 @@ connection.connect();
 
 // Query sentences definition
 // 1. Users
-var allUser = 'SELECT * FROM Users';
+var allUser = 'SELECT * FROM users';
 var selectUser = 'SELECT * FROM users WHERE username = ?';
 var insertUser = 'INSERT INTO users(username, password, userImageUrl, phone, email) VALUES(?,?,?,?,?)';
 var updateUser = 'UPDATE users SET phone = ?, email = ? WHERE username = ?';
