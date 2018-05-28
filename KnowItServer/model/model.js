@@ -254,7 +254,7 @@ exports.AllPosts = async function(){
             if(err){
                 reject(err);
             }
-            result.foreach(function(item){
+            result.forEach(function(item){
                 res[item.id] = {
                     'editor' : item.editor,
                     'title' : item.title,

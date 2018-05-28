@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -16,7 +18,7 @@ namespace know_it
     class NetworkControl
     {
         public static string AccessingURI = "chat.chenmt.science";
-        private const string httpsPrefix = "http://";
+        private const string httpsPrefix = "https://";
         public static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)
@@ -185,7 +187,53 @@ namespace know_it
 
         }
 
-        public static async Task<List<string>> GetAllPost(string userName)
+        public static async Task<List<ArrayList>> GetAllSimplePosts(string username, string password)
+        {
+            Dictionary<String, String> requestData = new Dictionary<string, string>()
+            {
+                {"name", username },
+                {"pass", password }
+            };
+
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(accessName + "/allDatas", new FormUrlEncodedContent(requestData));
+
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                List<ArrayList> list = new List<ArrayList>();
+
+                var json = JsonObject.Parse(responseString);
+
+                if(json.GetNamedNumber("code") == 1)
+                {
+                    for(int i = 0; i < json.Count; i++)
+                    {
+                        var arr = new ArrayList();
+                        var item = json.GetNamedObject(i.ToString());
+                        arr.Add(item.GetNamedString("editor"));
+                        arr.Add(item.GetNamedString("title"));
+                        arr.Add(item.GetNamedString("content"));
+                        arr.Add(item.GetNamedString("imageUrl"));
+                        arr.Add(item.GetNamedString("thumbs"));
+                        list.Add(arr);
+                    }
+                }else
+                {
+                    Debug.WriteLine(json.GetNamedString("errMessage"));
+                }
+
+                return list;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static async Task<List<string>> GetAllPostID(string userName)
         {
             Dictionary<String, String> requestData = new Dictionary<string, string>();
 

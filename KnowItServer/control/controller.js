@@ -178,7 +178,7 @@ exports.DeleteThumbUp = async function(thumbUser, pass, postID){
 }
 
 exports.LeaveComment = async function(commentUser, pass, postID, content){
-    var test = await model.TestLogIn(thumbUser, pass);
+    var test = await model.TestLogIn(commentUser, pass);
     var res = {
         'code' : 0,
         'errMessage' : ''

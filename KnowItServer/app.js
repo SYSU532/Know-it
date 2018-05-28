@@ -126,7 +126,7 @@ router.post('/modifyUserInfo', async(ctx, next)=>{
     var body = ctx.request.query;
     var username = body.name, password = body.pass,
         newEmail = body.newEmail, newPhone = body.newPhone,
-        imgType = body.imgType;
+        imgType = body.imgType,
         newUserImage = await rawBody(ctx.req);
     if(newUserImage.length < 10){
         newUserImage = null;
