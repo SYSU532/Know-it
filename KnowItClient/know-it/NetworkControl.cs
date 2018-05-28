@@ -16,7 +16,7 @@ namespace know_it
     class NetworkControl
     {
         public static string AccessingURI = "chat.chenmt.science";
-        private const string httpsPrefix = "http://";
+        private const string httpsPrefix = "https://";
         private static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)
@@ -407,10 +407,13 @@ namespace know_it
         {
             HttpClient client = new HttpClient();
             byte[] buffer;
-            if (media != null) {
+            string fileType = "";
+            if (media != null && (imagePostfixes.Contains(media.FileType.ToLower()) || 
+                videoPostfixes.Contains(media.FileType.ToLower()))) {
                 Stream fileStream = await media.OpenStreamForReadAsync();
                 buffer = new byte[(int)fileStream.Length];
                 fileStream.Read(buffer, 0, (int)fileStream.Length);
+                fileType = media.FileType.ToLower();
             }
             else
             {
@@ -420,8 +423,7 @@ namespace know_it
 
             ByteArrayContent content = new ByteArrayContent(buffer);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-            string fileType = media.FileType.ToLower();
+           
 
             bool isImage = imagePostfixes.Contains(fileType);
             bool isVideo = videoPostfixes.Contains(fileType);
@@ -467,10 +469,12 @@ namespace know_it
         {
             HttpClient client = new HttpClient();
             byte[] buffer;
+            string imgType = "";
             if (avatar != null) {
                 Stream fileStream = await avatar.OpenStreamForReadAsync();
                 buffer = new byte[(int)fileStream.Length];
                 fileStream.Read(buffer, 0, (int)fileStream.Length);
+                imgType = avatar.FileType;
             }
             else
             {
@@ -479,8 +483,7 @@ namespace know_it
             }
             ByteArrayContent content = new ByteArrayContent(buffer);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-            string imgType = avatar.FileType;
+            
 
             StringBuilder builder = new StringBuilder();
             builder.Append(accessName);
