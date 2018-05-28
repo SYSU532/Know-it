@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace know_it
 {
     class NetworkControl
     {
-        public static string AccessingURI = "127.0.0.1:18080";
+        public static string AccessingURI = "chat.chenmt.science";
         private const string httpsPrefix = "http://";
         private static string accessName { get { return httpsPrefix + AccessingURI; } }
 
@@ -51,17 +51,17 @@ namespace know_it
         private static Dictionary<string, string> parseUserInfoJSON(string JSONStr)
         {
             var json = JsonObject.Parse(JSONStr);
-            var returnCode = json.GetNamedString("code");
-            if (returnCode == "0")
+            var returnCode = json.GetNamedNumber("code");
+            if (returnCode == 0)
             {
                 var errMsg = json.GetNamedString("errMessage");
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode},
+                    {"code", "0"},
                     {"errMessage", errMsg }
                 };
             }
-            else if (returnCode == "1")
+            else if (returnCode == 1)
             {
                 var username = json.GetNamedString("username");
                 var email = json.GetNamedString("email");
@@ -69,7 +69,7 @@ namespace know_it
                 var phone = json.GetNamedString("phone");
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode},
+                    {"code", "1"},
                     {"username", username },
                     {"email", email},
                     {"phone", phone},
@@ -151,7 +151,7 @@ namespace know_it
                 var errMsg = json.GetNamedString("errMessage");
                 return new Dictionary<string, object>
                 {
-                    {"code", returnCode},
+                    {"code", "0"},
                     {"errMessage", errMsg }
                 };
             }
@@ -160,14 +160,14 @@ namespace know_it
                 var content = json.GetNamedString("content");
                 var media = json.GetNamedString("media");
                 var image = json.GetNamedString("image");
-                var thumbs = json.GetNamedString("thumbs");
+                var thumbs = json.GetNamedNumber("thumbs");
                 JsonObject comments = json.GetNamedObject("comments");
                 Dictionary<string, object> res = new Dictionary<string, object>
                 {
-                    {"code", returnCode},
+                    {"code", "1"},
                     {"content", content },
                     {"image", image },
-                    {"thumbs", thumbs }
+                    {"thumbs", thumbs.ToString() }
                 };
                 Dictionary<String, String> commentDict = new Dictionary<string, string>();
                 foreach (var pair in comments)
@@ -268,7 +268,7 @@ namespace know_it
                 var errMsg = json.GetNamedString("errMessage");
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode.ToString()},
+                    {"code", "0"},
                     {"errMessage", errMsg }
                 };
             }
@@ -276,7 +276,7 @@ namespace know_it
             {
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode.ToString()}
+                    {"code", "1"}
                 };
             }
             //Unexpected Return value 

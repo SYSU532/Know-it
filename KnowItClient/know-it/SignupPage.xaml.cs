@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace know_it
         public SignupPage()
         {
             this.InitializeComponent();
-            //InitializeFrostedGlass(GlassHost);
+            InitializeFrostedGlass(GlassHost);
         }
 
         private StorageFile thumbFile = null;
