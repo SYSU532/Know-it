@@ -5,8 +5,8 @@ const crypto = require('crypto');
 
 const connection = mysql.createConnection({
     host : 'localhost',
-    user : 'root',
-    password : '123456',
+    user : 'knowit',
+    password : 'sysu532',
     database : 'knowit'
 });
 
@@ -18,6 +18,7 @@ var allUser = 'SELECT * FROM users';
 var selectUser = 'SELECT * FROM users WHERE username = ?';
 var insertUser = 'INSERT INTO users(username, password, userImageUrl, phone, email) VALUES(?,?,?,?,?)';
 var updateUser = 'UPDATE users SET phone = ?, email = ? WHERE username = ?';
+var updateUser2 = 'UPDATE users SET phone = ?, email = ?, userImageUrl = ? WHERE username = ?';
 
 // 2. Posts
 var allPost = 'SELECT * FROM Posts';
@@ -90,9 +91,16 @@ exports.TestLogIn = async function(username, testPass){
     });
 }
 
-exports.ModifyUserInfo = function(username, newUserImage, newPhone, newEmail){
-    var updateParam = [newPhone, newEmail, username];
-    connection.query(updateUser, updateParam, function(err, result){
+exports.ModifyUserInfo = function(username, newUserImage, imgType, newPhone, newEmail){
+    var updateParam, updateSen = updateUser;
+    if(imgType === ''){
+        updateParam = [newPhone, newEmail, username];
+    }else {
+        updateParam = [newPhone, newEmail, username+imgType, username];
+        updateSen = updateUser2;
+    }
+    
+    connection.query(updateSen, updateParam, function(err, result){
         if(err) throw err;
     });
     var selectParam = [username];

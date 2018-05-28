@@ -188,7 +188,7 @@ exports.LeaveComment = async function(commentUser, pass, postID, content){
     return res;
 }
 
-exports.ModifyInfo = async function(username, pass, newUserImage, newPhone, newEmail){
+exports.ModifyInfo = async function(username, pass, newUserImage, imgType, newPhone, newEmail){
     var test = await model.TestLogIn(username, pass);
     var res = {
         'code' : 0,
@@ -196,7 +196,7 @@ exports.ModifyInfo = async function(username, pass, newUserImage, newPhone, newE
     }
     if(test === 1){
         res['code'] = 1;
-        model.ModifyUserInfo(username, newUserImage, newPhone, newEmail);
+        model.ModifyUserInfo(username, newUserImage, imgType, newPhone, newEmail);
     }else {
         res['errMessage'] = 'Invalid User name or Password Error!';
     }
