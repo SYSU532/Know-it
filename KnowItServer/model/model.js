@@ -21,24 +21,24 @@ var updateUser = 'UPDATE users SET phone = ?, email = ? WHERE username = ?';
 var updateUser2 = 'UPDATE users SET phone = ?, email = ?, userImageUrl = ? WHERE username = ?';
 
 // 2. Posts
-var allPost = 'SELECT * FROM Posts';
-var selectPost = 'SELECT * FROM Posts WHERE id = ?';
+var allPost = 'SELECT * FROM posts';
+var selectPost = 'SELECT * FROM posts WHERE id = ?';
 // thumbStore strucyure: [thumbGuy1, thumbGuy2, .....], messStore structure: [[messGuy1, mess1], [messGuy2, mess2], .....]
-var insertPost = 'INSERT INTO Posts(title, editor, content, imageUrl, mediaUrl) VALUES(?,?,?,?,?)';
-var getPostCount = 'SELECT id FROM Posts';
+var insertPost = 'INSERT INTO posts(title, editor, content, imageUrl, mediaUrl) VALUES(?,?,?,?,?)';
+var getPostCount = 'SELECT id FROM posts';
 
 // 3. Thumbs
-var selectThumb = 'SELECT * FROM Thumbs WHERE id = ?';
-var insertThumb = 'INSERT INTO Thumbs(id, thumbUser) VALUES(?,?)';
-var deleteThumb = 'DELETE FROM Thumbs WHERE id = ? AND thumbUser = ?';
+var selectThumb = 'SELECT * FROM thumbs WHERE id = ?';
+var insertThumb = 'INSERT INTO thumbs(id, thumbUser) VALUES(?,?)';
+var deleteThumb = 'DELETE FROM thumbs WHERE id = ? AND thumbUser = ?';
 
 // 4. Comments
-var selectComment = 'SELECT * FROM Comments WHERE id = ?';
-var insertComment = 'INSERT INTO Comments(id, comUser, message) VALUES(?,?,?)';
+var selectComment = 'SELECT * FROM comments WHERE id = ?';
+var insertComment = 'INSERT INTO comments(id, comUser, message) VALUES(?,?,?)';
 
 // 5. Talks
-var insertTalk = 'INSERT INTO Talks(user, content) VALUES(?,?)';
-var allTalk = 'SELECT * FROM Talks';
+var insertTalk = 'INSERT INTO talks(user, content) VALUES(?,?)';
+var allTalk = 'SELECT * FROM talks';
 
 exports.InsertUser = function(username, pass, userImageUrl, phone, email){
     /* 
