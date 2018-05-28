@@ -375,7 +375,7 @@ namespace know_it
             builder.Append(phone);
             builder.Append("&email=");
             builder.Append(email);
-            builder.Append("&imgType=");
+            builder.Append("&imageType=");
             builder.Append(imgType);
             string url = builder.ToString();
 

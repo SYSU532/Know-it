@@ -46,7 +46,7 @@ exports.Logup = async function(username, pass, rePass, userImage, imgType, phone
         // If no error items, then push success flag, insert user
         if(resultCode.length === 0){
             resultCode.push(1);
-            model.InsertUser(username, pass, username+imgType, phone, email);
+            model.InsertUser(username, model.GetEncode_SHA256(pass), username+imgType, phone, email);
         }
     });
 

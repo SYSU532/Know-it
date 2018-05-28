@@ -1,6 +1,7 @@
 'use strict'
 const mysql = require('mysql');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const connection = mysql.createConnection({
     host : 'localhost',
@@ -78,7 +79,7 @@ exports.TestLogIn = async function(username, testPass){
             }else {
                 result.forEach(function(user) {
                     if(user.username === username){
-                        if(testPass == user.password){
+                        if(testPass == GetDecode_SHA256(user.password)){
                             code = 1; // Success
                         }else code = 0; // Password error
                     }
@@ -266,4 +267,20 @@ var changeUserImg = function(newUserImage, userImageUrl){
     fs.writeFileSync(trueImageUrl, buff, function(err){
         if(err) throw err;
     });
+}
+
+exports.GetEncode_SHA256 = function(str){
+    var secret = 'HoShiNoGen', key = secret.toString('hex');
+    var cipher = crypto.createCipher('aes192', key);
+    var encode_result = cipher.update(str, 'utf-8', 'hex');
+    encode_result += cipher.final('hex');
+    return encode_result;
+}
+
+var GetDecode_SHA256 = function(str){
+    var secret = 'HoShiNoGen', key = secret.toString('hex');
+    var decipher = crypto.createDecipher('aes192', key);
+    var decode_result = decipher.update(str, 'hex', 'utf-8');
+    decode_result += decipher.final('utf-8');
+    return decode_result;
 }
