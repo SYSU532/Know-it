@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace know_it
         {
             this.InitializeComponent();
             
-            //InitializeFrostedGlass(GlassHost);
+            InitializeFrostedGlass(GlassHost);
         }
         
         private string serverName {
@@ -84,14 +84,11 @@ namespace know_it
             else if (res["code"] == "1")
             {
                 msg = "Success!";
-                success = true;
             }
             MessageDialog dialog = new MessageDialog(msg);
             await dialog.ShowAsync();
             if (success)
             {
-                var resu = await NetworkControl.QueryUserInfo(UserNameBox.Text);
-                StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(NetworkControl.accessName + "/img/" +  resu["imageUrl"]));
                 //go to content page, passing a pair with username as key and password as value as parameter.
             }
         }
