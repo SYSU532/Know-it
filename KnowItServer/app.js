@@ -34,7 +34,7 @@ router.post('/logup', async (ctx, next)=>{
     var logupRes = await control.Logup(username, password, rePass, userImage, imgType, phone, email);
     var jsonBack = {
         'code' : logupRes['code'], // 0 for failure, 1 for success
-        'errMessgae' : logupRes['errMessage'] // when fail, print error message
+        'errMessage' : logupRes['errMessage'] // when fail, print error message
     };
     ctx.response.body = JSON.stringify(jsonBack);
 });

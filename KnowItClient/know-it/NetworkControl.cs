@@ -15,7 +15,7 @@ namespace know_it
 {
     class NetworkControl
     {
-        public static string AccessingURI = "127.0.0.1";
+        public static string AccessingURI = "127.0.0.1:18080";
         private const string httpsPrefix = "http://";
         private static string accessName { get { return httpsPrefix + AccessingURI; } }
 
@@ -145,8 +145,8 @@ namespace know_it
         private static Dictionary<string, object> parsePostInfo(string JSONStr)
         {
             JsonObject json = JsonObject.Parse(JSONStr);
-            var returnCode = json.GetNamedString("code");
-            if (returnCode == "0")
+            var returnCode = json.GetNamedNumber("code");
+            if (returnCode == 0)
             {
                 var errMsg = json.GetNamedString("errMessage");
                 return new Dictionary<string, object>
@@ -155,7 +155,7 @@ namespace know_it
                     {"errMessage", errMsg }
                 };
             }
-            else if (returnCode == "1")
+            else if (returnCode == 1)
             {
                 var content = json.GetNamedString("content");
                 var media = json.GetNamedString("media");
@@ -262,21 +262,21 @@ namespace know_it
         private static Dictionary<string, string> parseBinaryResponse(string JSONStr)
         {
             var json = JsonObject.Parse(JSONStr);
-            var returnCode = json.GetNamedString("code");
-            if (returnCode == "0")
+            var returnCode = json.GetNamedNumber("code");
+            if (returnCode == 0)
             {
                 var errMsg = json.GetNamedString("errMessage");
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode},
+                    {"code", returnCode.ToString()},
                     {"errMessage", errMsg }
                 };
             }
-            else if (returnCode == "1")
+            else if (returnCode == 1)
             {
                 return new Dictionary<string, string>
                 {
-                    {"code", returnCode}
+                    {"code", returnCode.ToString()}
                 };
             }
             //Unexpected Return value 
@@ -369,7 +369,7 @@ namespace know_it
             builder.Append(username);
             builder.Append("&pass=");
             builder.Append(password);
-            builder.Append("&repass=");
+            builder.Append("&rePass=");
             builder.Append(repass);
             builder.Append("&phone=");
             builder.Append(phone);

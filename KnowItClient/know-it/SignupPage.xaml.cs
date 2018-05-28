@@ -207,7 +207,7 @@ namespace know_it
                 }
                 else if (res["code"] == "0")
                 {
-                    msg = res["errorMsg"];
+                    msg = res["errMessage"];
                 }
                 else if (res["code"] == "1")
                 {
