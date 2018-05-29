@@ -5,8 +5,8 @@ const crypto = require('crypto');
 
 const connection = mysql.createConnection({
     host : 'localhost',
-    user : 'knowit',
-    password : 'sysu532',
+    user : 'root',
+    password : '123456',
     database : 'knowit'
 });
 
@@ -259,16 +259,13 @@ exports.AllPosts = async function(){
                     'editor' : item.editor,
                     'title' : item.title,
                     'content' : item.content,
-                    'imageUrl' : item.imageUrl
+                    'imageUrl' : item.imageUrl,
+                    'thumbs' : null
                 };
-                connection.query(selectThumb, [item.id], function(err, result){
-                    res[item.id].thumbs = result.length;
-                });
-            });
-            resolve(res);
         });
-    })
-}
+        resolve(res);
+    });
+})}
 
 var changeUserImg = function(newUserImage, userImageUrl){
     var buff = new Buffer(newUserImage, 'ascii');
