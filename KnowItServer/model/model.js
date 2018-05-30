@@ -5,8 +5,8 @@ const crypto = require('crypto');
 
 const connection = mysql.createConnection({
     host : 'localhost',
-    user : 'root',
-    password : '123456',
+    user : 'knowit',
+    password : 'sysu532',
     database : 'knowit'
 });
 
@@ -173,20 +173,25 @@ exports.ViewSinglePost = async function(postID){
                     reject(err);
                 }
                 res.push(result.length);
-                connection.query(selectComment, [realID], function(err, result){
-                    if(err){
-                        reject(err);
-                    }
-                    var comments = {};
-                    result.forEach(function(com){
-                        comments[com.comUser] = comments[com.message];
-                    })
-                    res.push(comments);
-                    resolve(res);
-                });
+                resolve(res);
             });
         });
     });
+}
+
+exports.AddComments = async function(username, id){
+    return new Promise((resolve, reject)=>{
+        connection.query(selectComment, [id], function(err, result){
+            if(err){
+                reject(err);
+            }
+            var comments = {};
+            result.forEach(function(com){
+                comments[com.comUser] = com.message;
+            })
+            resolve(comments);
+        });
+    })
 }
 
 exports.StoreUserImg = function(userImage, imageUrl){   
@@ -219,7 +224,7 @@ exports.GetPostsIDs = async function(){
                 reject(err);
             }
             result.forEach(function(item){
-                res.push(item);
+                res.push(item.id);
             });
             resolve(res);
         });
@@ -247,25 +252,18 @@ exports.SendTalk = function(user, content){
     });
 }
 
-exports.AllPosts = async function(){
+exports.checkThumbOrNot = async function(username, id){
     return new Promise((resolve, reject)=>{
-        var res = {};
-        connection.query(allPost, function(err, result){
-            if(err){
-                reject(err);
-            }
+        var res = 0;
+        connection.query(selectThumb, [id], function(err, result){
             result.forEach(function(item){
-                res[item.id] = {
-                    'editor' : item.editor,
-                    'title' : item.title,
-                    'content' : item.content,
-                    'imageUrl' : item.imageUrl,
-                    'thumbs' : null
-                };
+                if(item.thumbUser == username)
+                    res = 1;
+            });
+            resolve(res);
         });
-        resolve(res);
     });
-})}
+}
 
 var changeUserImg = function(newUserImage, userImageUrl){
     var buff = new Buffer(newUserImage, 'ascii');

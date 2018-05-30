@@ -17,7 +17,7 @@ namespace know_it
 {
     class NetworkControl
     {
-        public static string AccessingURI = "chat.chenmt.science";
+        public static string AccessingURI = "127.0.0.1:18080";
         private const string httpsPrefix = "http://";
         public static string accessName { get { return httpsPrefix + AccessingURI; } }
 
@@ -254,6 +254,37 @@ namespace know_it
             {
                 //Connection error
                 return null;
+            }
+        }
+
+        public static async Task<Boolean> CheckUserThumbOrNot(string username, string id)
+        {
+            var requestData = new Dictionary<string, string>
+            {
+                {"name", username},
+                {"id", id }
+            };
+
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(accessName + "/checkThumb", new FormUrlEncodedContent(requestData));
+
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                var json = JsonObject.Parse(responseString);
+                var res = json.GetNamedNumber("haveThumb");
+                if (res == 1)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch
+            {
+                //Connection error
+                return false;
             }
         }
 

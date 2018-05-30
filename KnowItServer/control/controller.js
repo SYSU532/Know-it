@@ -242,9 +242,14 @@ exports.GetAllPosts = async function(username, password){
     return res;
 }
 
-exports.AddThumbs = async function(res){
-    var dataResR = await model.AddAllThumbs(res);
-    return dataResR;
+exports.checkThumbOrNot = async function(username, postID){
+    var result = await model.checkThumbOrNot(username, postID);
+    return result;
+}
+
+exports.AddComments = async function(username, id){
+    var result = await model.AddComments(username, id);
+    return result;
 }
 
 exports.GetTalks = async function(username, password){

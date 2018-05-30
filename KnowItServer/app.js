@@ -44,6 +44,7 @@ router.post('/data', async (ctx, next)=>{
     var username = body.name, password = body.pass,
         postID = body.id;
     var dataRes = await control.Data(username, password, postID); // {StateCode, contentData, imageUrl, mediaUrl, thumbStore, messStore}
+    var dataRes2 = await control.AddComments(username, postID);
     var jsonBack = {
         'code' : dataRes['code'],
         'editor' : dataRes['editor'],
@@ -52,8 +53,9 @@ router.post('/data', async (ctx, next)=>{
         'image' : dataRes['imageUrl'], // Image may be null
         'media' : dataRes['mediaUrl'], // Media may be null
         'thumbs' : dataRes['thumbsNum'], 
-        'comments' : dataRes['comments']
+        'comments' : dataRes2
     };
+    console.log(jsonBack);
     var errBack = {
         'errMessage' : 'Invalid user or password!'
     };
@@ -93,10 +95,12 @@ router.post('/upload', async (ctx, next)=>{
     ctx.response.body = JSON.stringify(jsonBack);
 });
 
-router.post('/allPostID', async(ctx, next)=>{
-    var dataRes = await control.GetPostIDs();
+router.post('/checkThumb', async(ctx, next)=>{
+    var body = ctx.request.body;
+    var username = body.name, postID = body.id;
+    var dataRes = await control.checkThumbOrNot(username, postID);
     var jsonBack = {
-        'postIDs' : dataRes
+        'haveThumb' : dataRes
     };
     ctx.response.body = JSON.stringify(jsonBack);
 });
