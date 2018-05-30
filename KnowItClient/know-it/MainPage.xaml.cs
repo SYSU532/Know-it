@@ -92,7 +92,7 @@ namespace know_it
             await dialog.ShowAsync();
             if (success)
             {
-                var re = await NetworkControl.CheckUserThumbOrNot(UserNameBox.Text, "1");
+                var re = await NetworkControl.GetAllPostID(UserNameBox.Text);
 
                 //go to content page, passing a pair with username as key and password as value as parameter.
             }
