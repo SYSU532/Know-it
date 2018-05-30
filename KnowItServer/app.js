@@ -137,7 +137,7 @@ router.post('/modifyUserInfo', async(ctx, next)=>{
         newUserImage = null;
     }
     var dataRes = await control.ModifyInfo(username, password, newUserImage, imgType, newPhone, newEmail);
-    ctx.reponse.body = JSON.stringify(dataRes);
+    ctx.response.body = JSON.stringify(dataRes);
 });
 
 router.post('/getUserInfo', async(ctx, next)=>{
