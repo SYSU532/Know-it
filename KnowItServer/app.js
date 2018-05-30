@@ -68,6 +68,7 @@ router.post('/allDatas', async(ctx, next)=>{
     var body = ctx.request.body;
     var username = body.name, password = body.pass;
     var dataRes = await control.GetAllPosts(username, password);
+    console.log(dataRes);
     ctx.response.body = dataRes;
 });
 

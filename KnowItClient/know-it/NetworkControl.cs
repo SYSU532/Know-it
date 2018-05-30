@@ -18,7 +18,7 @@ namespace know_it
     class NetworkControl
     {
         public static string AccessingURI = "chat.chenmt.science";
-        private const string httpsPrefix = "https://";
+        private const string httpsPrefix = "http://";
         public static string accessName { get { return httpsPrefix + AccessingURI; } }
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)
@@ -209,15 +209,16 @@ namespace know_it
 
                 if(json.GetNamedNumber("code") == 1)
                 {
-                    for(int i = 0; i < json.Count; i++)
+                    for(int i = 0; i < json.Count-1; i++)
                     {
                         var arr = new ArrayList();
-                        var item = json.GetNamedObject(i.ToString());
+                        var index = (i + 1).ToString();
+                        var item = json.GetNamedObject(index);
                         arr.Add(item.GetNamedString("editor"));
                         arr.Add(item.GetNamedString("title"));
                         arr.Add(item.GetNamedString("content"));
                         arr.Add(item.GetNamedString("imageUrl"));
-                        arr.Add(item.GetNamedString("thumbs"));
+                        arr.Add(item.GetNamedNumber("thumbs"));
                         list.Add(arr);
                     }
                 }else
