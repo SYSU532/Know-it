@@ -186,8 +186,12 @@ exports.AddComments = async function(username, id){
                 reject(err);
             }
             var comments = {};
+            var i = 0;
             result.forEach(function(com){
-                comments[com.comUser] = com.message;
+                var comm = {};
+                comm[com.comUser] = com.message;
+                comments[i] = comm;
+                i++;
             })
             resolve(comments);
         });

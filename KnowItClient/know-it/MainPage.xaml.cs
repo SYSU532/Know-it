@@ -92,7 +92,8 @@ namespace know_it
             await dialog.ShowAsync();
             if (success)
             {
-                var re = await NetworkControl.GetAllPostID(UserNameBox.Text);
+                await NetworkControl.PostComment(UserNameBox.Text, PasswordBox.Password, "1", "shit...");
+                var re = await NetworkControl.GetPostFromID(UserNameBox.Text, PasswordBox.Password, "1");
 
                 //go to content page, passing a pair with username as key and password as value as parameter.
             }

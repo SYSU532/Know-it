@@ -69,7 +69,10 @@ router.post('/data', async (ctx, next)=>{
 router.post('/allPostID', async(ctx, next)=>{
     var body = ctx.request.body;
     var dataRes = await control.GetPostIDs();
-    ctx.response.body = dataRes;
+    var jsonBack = {
+        "postIDs" : dataRes
+    }
+    ctx.response.body = jsonBack;
 });
 
 router.post('/upload', async (ctx, next)=>{
