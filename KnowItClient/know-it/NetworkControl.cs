@@ -6,11 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Json;
+using Windows.Networking.Sockets;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Popups;
 
 namespace know_it
@@ -20,6 +23,9 @@ namespace know_it
         public static string AccessingURI = "127.0.0.1:18080";
         private const string httpsPrefix = "http://";
         public static string accessName { get { return httpsPrefix + AccessingURI; } }
+
+        public static MessageWebSocket ws = new MessageWebSocket();
+        
 
         public static async Task<Dictionary<string, string>> QueryUserInfo(string userName)
         {
@@ -255,6 +261,38 @@ namespace know_it
                 //Connection error
                 return null;
             }
+        }
+
+        public static void InitialWebSocket()
+        {
+            ws.Control.MessageType = Windows.Networking.Sockets.SocketMessageType.Utf8;
+            ws.MessageReceived += WebSocket_ReceivedMessage;
+        }
+
+        public static async Task SendChatMessage(string username, string password, string message)
+        {
+            try
+            {
+                await ws.ConnectAsync(new Uri("ws://127.0.0.1:8081"));
+                //Start to send messages
+                DataWriter writer = new DataWriter(ws.OutputStream);
+                writer.WriteString(username + " " + password + " " + message);
+                await writer.StoreAsync();
+            }
+            catch
+            {
+                //Connection error
+            }
+        }
+
+        private static void WebSocket_ReceivedMessage(MessageWebSocket ws, MessageWebSocketMessageReceivedEventArgs args)
+        {
+            DataReader reader = args.GetDataReader();
+            reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+            string result = reader.ReadString(reader.UnconsumedBufferLength);
+
+            //Here, you need to put receive message to the chat room view model.
+            Debug.WriteLine(result);
         }
 
         public static async Task<Boolean> CheckUserThumbOrNot(string username, string id)

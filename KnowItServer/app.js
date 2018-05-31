@@ -4,6 +4,7 @@ const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
 const rawBody = require('raw-body');
 const fs = require('fs');
+const ws = require('nodejs-websocket');
 
 const control = require('./control/controller.js');
 
@@ -179,3 +180,25 @@ app.use(router.routes());
 
 app.listen(18080);
 console.log('Server listening in port 18080.......');
+
+var server = ws.createServer(function(conn){
+    conn.on('text', async function(str){
+        var re = str.split(' ');
+        if(re.length !== 3){
+            console.log('Fuck, there is someone who sends unformated data...');
+        }
+        var username = re[0], password = re[1], content = re[2];
+        var res = await control.Login(username, password);
+        if(res.code == 1){
+            conn.sendText(username + ' ' + content);
+        }else {
+            console.log('Fuck, a non-user man wants to connects to the ChatRoom...');
+        }
+    });
+    conn.on('close', function(code, reason){
+        console.log('WebSocket连接关闭...');
+    });
+    conn.on('error', function(code, reason){});
+}).listen(8081);
+
+console.log('WebSocket Server listening on port 8081....');
