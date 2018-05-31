@@ -56,7 +56,6 @@ router.post('/data', async (ctx, next)=>{
         'thumbs' : dataRes['thumbsNum'], 
         'comments' : dataRes2
     };
-    console.log(jsonBack);
     var errBack = {
         'errMessage' : 'Invalid user or password!'
     };
@@ -199,6 +198,6 @@ var server = ws.createServer(function(conn){
         console.log('WebSocket连接关闭...');
     });
     conn.on('error', function(code, reason){});
-}).listen(8081);
+}).listen(18088);
 
-console.log('WebSocket Server listening on port 8081....');
+console.log('WebSocket Server listening on port 18088....');
