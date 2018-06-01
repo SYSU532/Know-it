@@ -181,16 +181,30 @@ app.use(router.routes());
 app.listen(18080);
 console.log('Server listening in port 18080.......');
 
+var conn_users = [];
+
 var server = ws.createServer(function(conn){
     conn.on('text', async function(str){
         var re = str.split(' ');
+        var content = '';
         if(re.length !== 3){
             console.log('Fuck, there is someone who sends unformated data...');
         }
-        var username = re[0], password = re[1], content = re[2];
+        for(var i=2;i<re.length;i++){
+            content += re[i];
+            if(i!=re.length-1)
+                content += ' ';
+        }
+        var username = re[0], password = re[1];
         var res = await control.Login(username, password);
+        var user = conn;
         if(res.code == 1){
-            conn.sendText(username + ' ' + content);
+            if(conn_users.indexOf(user) === -1){
+                conn_users.push(user);
+            }
+            conn_users.forEach(function(item){
+                item.sendText(username + ' ' + content);
+            })
         }else {
             console.log('Fuck, a non-user man wants to connects to the ChatRoom...');
         }
@@ -199,6 +213,6 @@ var server = ws.createServer(function(conn){
         console.log('WebSocket连接关闭...');
     });
     conn.on('error', function(code, reason){});
-}).listen(8081);
+}).listen(18088);
 
-console.log('WebSocket Server listening on port 8081....');
+console.log('WebSocket Server listening on port 18088....');
