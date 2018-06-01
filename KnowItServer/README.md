@@ -4,6 +4,8 @@
 
 Linux + Nginx + MySQL + nodejs
 
+提醒：由于 Know-It 当前运行期间对密码使用明文传输，出于安全请保证服务端具有有效的 SSL 证书与域名(免费 SSL 证书推荐使用 Let's Encrypt)，客户端在不修改代码的情况下将默认使用 https 对指定域名进行连接。
+
 ## 直接运行
 
 将项目所有文件放入运行目录下，键入`npm install` 安装 node 依赖文件，完成后直接通过使用`node app.js`即可运行。

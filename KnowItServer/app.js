@@ -56,7 +56,6 @@ router.post('/data', async (ctx, next)=>{
         'thumbs' : dataRes['thumbsNum'], 
         'comments' : dataRes2
     };
-    console.log(jsonBack);
     var errBack = {
         'errMessage' : 'Invalid user or password!'
     };
